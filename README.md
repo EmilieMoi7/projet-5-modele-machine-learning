@@ -1,3 +1,12 @@
+---
+title: Projet 5 Modele ML
+emoji: 🚀
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+app_file: app.py
+pinned: false
+---
 # Projet 5 – Modèle de machine learning
 
 ## Description
