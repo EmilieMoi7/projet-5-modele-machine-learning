@@ -3,25 +3,49 @@ from pydantic import BaseModel, Field, ConfigDict, ValidationError
 
 # Validation Pydantic des entrées
 class PredictRequest(BaseModel):
-    text: str = Field(..., min_length=1, description="Texte non vide")
+    age: int = Field(..., ge=16, le=100)
+    genre: str
+    revenu_mensuel: float
+    anciennete_entreprise: int
+    satisfaction_employe: int = Field(..., ge=1, le=5)
+
     model_config = ConfigDict(extra="forbid")
 
+
 # Fonction de prédiction (API via Gradio)
-def predict(text):
+def predict(age, genre, revenu_mensuel, anciennete_entreprise, satisfaction_employe):
     try:
-        payload = PredictRequest(text=text)
+        payload = PredictRequest(
+            age=age,
+            genre=genre,
+            revenu_mensuel=revenu_mensuel,
+            anciennete_entreprise=anciennete_entreprise,
+            satisfaction_employe=satisfaction_employe,
+        )
     except ValidationError as e:
         raise gr.Error(f"Entrée invalide : {e.errors()}")
 
-    return f"Texte reçu : {payload.text}"
+    return payload.model_dump()
+
+
 
 with gr.Blocks() as demo:
     gr.Markdown("# Projet 5 – Modèle ML 🚀")
-    inp = gr.Textbox(label="Entrée utilisateur")
-    out = gr.Textbox(label="Sortie")
+    age = gr.Number(label="Âge", precision=0)
+    genre = gr.Dropdown(["Homme", "Femme"], label="Genre")
+    revenu = gr.Number(label="Revenu mensuel")
+    anciennete = gr.Number(label="Ancienneté (années)", precision=0)
+    satisfaction = gr.Slider(1, 5, step=1, label="Satisfaction employé")
+
+    out = gr.JSON(label="Résultat")
     btn = gr.Button("Prédire")
 
-    btn.click(predict, inp, out)
+    btn.click(
+     predict,
+     inputs=[age, genre, revenu, anciennete, satisfaction],
+     outputs=out,
+)
+
 
 if __name__ == "__main__":
     demo.launch()
