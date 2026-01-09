@@ -50,3 +50,31 @@ CREATE TABLE IF NOT EXISTS employees_dataset (
     annees_depuis_la_derniere_promotion TEXT,
     annees_sous_responsable_actuel TEXT
 );
+
+-- ===============================
+-- Tables de traçabilité ML
+-- ===============================
+
+CREATE TABLE IF NOT EXISTS model_inputs (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    age INTEGER,
+    genre TEXT,
+    revenu_mensuel FLOAT,
+    anciennete_entreprise INTEGER,
+    satisfaction_employe INTEGER
+);
+CREATE TABLE IF NOT EXISTS model_outputs (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    model_input_id INTEGER NOT NULL,
+    prediction BOOLEAN,
+    prediction_proba FLOAT,
+
+    CONSTRAINT fk_model_input
+        FOREIGN KEY (model_input_id)
+        REFERENCES model_inputs(id)
+        ON DELETE CASCADE
+);
