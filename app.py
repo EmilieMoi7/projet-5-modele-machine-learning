@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field, ConfigDict, ValidationError
 import joblib
 import pandas as pd
 from pathlib import Path
+from src.projet5.db.db import insert_model_input, insert_model_output
+
 
 # =========================
 # Chargement du modèle (1 seule fois)
@@ -89,7 +91,6 @@ def build_model_input(age, genre, revenu_mensuel, anciennete_entreprise, satisfa
 # Fonction de prédiction (appelée par Gradio)
 # =========================
 def predict(age, genre, revenu_mensuel, anciennete_entreprise, satisfaction_employe):
-    # Gradio peut renvoyer des floats pour certains widgets
     try:
         payload = PredictRequest(
             age=int(age),
@@ -101,17 +102,27 @@ def predict(age, genre, revenu_mensuel, anciennete_entreprise, satisfaction_empl
     except ValidationError as e:
         raise gr.Error(f"Entrée invalide : {e.errors()}")
 
+    model_input_id = insert_model_input(
+        payload.age,
+        payload.genre,
+        payload.revenu_mensuel,
+        payload.anciennete_entreprise,
+        payload.satisfaction_employe,
+    )
+
     X = build_model_input(**payload.model_dump())
 
     prediction = bool(model.predict(X)[0])
-
-    # predict_proba -> proba de la classe 1 en général (index 1)
     proba = float(model.predict_proba(X)[0, 1])
+
+    insert_model_output(model_input_id, prediction, proba)
 
     return {
         "prediction": prediction,
         "prediction_proba": round(proba, 4),
+        "model_input_id": model_input_id,
     }
+
 
 
 # =========================
