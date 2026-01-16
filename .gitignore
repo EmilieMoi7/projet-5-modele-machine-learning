@@ -211,3 +211,7 @@ data/
 # Modèles ML
 models/
 *.joblib
+
+# autoriser le modèle pour la CI
+!models/
+!models/model.joblib
