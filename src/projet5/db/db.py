@@ -37,6 +37,7 @@ def insert_model_input(age, genre, revenu_mensuel, anciennete_entreprise, satisf
 
     return model_input_id
 
+
 def insert_model_output(model_input_id, prediction, prediction_proba):
     conn = get_connection()
     cur = conn.cursor()
@@ -50,9 +51,10 @@ def insert_model_output(model_input_id, prediction, prediction_proba):
         )
         VALUES (%s, %s, %s)
         """,
-        (model_input_id, prediction, prediction_proba)
+        (model_input_id, prediction, prediction_proba),
     )
 
     conn.commit()
     cur.close()
     conn.close()
+
