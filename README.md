@@ -24,7 +24,7 @@ Le projet couvre :
 ---
 
 ## Fonctionnalités
-- **- **Prédiction** : saisie des données via l’interface Gradio et retour d’une prédiction
+- **Prédiction** : saisie des données via l’interface Gradio et retour d’une prédiction
 - **Validation d’entrée/sortie** : schémas (ex. Pydantic) + contraintes de base.
 - **Pipeline de transformation des données** cohérent avec l’entraînement du modèle
 - **Calcul de probabilités associées à la prédiction**
@@ -116,7 +116,6 @@ Exemple de réponse :
   "prediction_proba": 0.0003,
   "model_input_id": 12
 }
-```
 
 ---
 
@@ -133,10 +132,31 @@ pytest -v
 pytest --cov
 ```
 
+## Rapport de couverture
+Un rapport de couverture de tests est généré à l’aide de pytest-cov :
+
+```bash
+pytest --cov=. --cov-report=term-missing --cov-report=html
+```
+
+Cette commande produit :
+- un résumé de la couverture directement dans le terminal,
+- un rapport HTML détaillé généré dans le dossier htmlcov/.
+Le rapport HTML permet d’identifier précisément les parties du code couvertes par les tests ainsi que les zones restant à renforcer.
+
 ---
 
 ## Intégration continue (CI/CD)
 Un pipeline CI/CD est configuré via GitHub Actions afin d’installer les dépendances, exécuter les tests et garantir la stabilité du projet à chaque push et pull request.
+
+---
+
+## Sécurité et gestion des secrets
+- Les secrets (tokens, identifiants) sont stockés exclusivement via les variables d’environnement et les secrets GitHub Actions.
+- Aucun secret sensible n’est versionné dans le dépôt Git.
+- Les fichiers `.env` sont ignorés via `.gitignore`.
+- Les entrées utilisateurs sont validées via des schémas Pydantic afin de limiter les risques liés aux données invalides.
+- Les environnements de développement et de CI sont clairement séparés.
 
 ---
 ## Conteneurisation avec Docker
@@ -145,9 +165,34 @@ Le projet est conteneurisé à l’aide de Docker afin de standardiser l’envir
 ```bash
 docker build -t projet5-ml .
 docker run -p 7860:7860 projet5-ml
+```
 
 L’application est accessible à l’adresse :
 http://localhost:7860
+
+---
+## Documentation
+
+### Documentation de l’API
+L’API expose une documentation intégrée via l’interface Gradio.
+Les schémas de données, contraintes et validations sont définis à l’aide de Pydantic, ce qui garantit la cohérence des entrées et sorties.
+
+### Documentation technique du projet
+Une documentation technique est rédigée à l’aide de **MkDocs**.
+
+Elle présente :
+- l’architecture générale du projet,
+- le pipeline de traitement et de prédiction,
+- le modèle de machine learning,
+- les choix techniques réalisés,
+- les pistes d’amélioration et de maintenance.
+
+### Lancer la documentation en local
+
+```bash
+mkdocs serve
+La documentation est alors accessible à l’adresse indiquée dans le terminal (par défaut : http://127.0.0.1:8000).
+```
 
 ---
 ## Choix techniques et limites
