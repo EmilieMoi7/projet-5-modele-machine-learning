@@ -50,21 +50,28 @@ Le projet couvre :
 
 ```bash
 projet-5-modele-machine-learning/
+├── docs/                      # Documentation technique (MkDocs)
+│   ├── index.md
+│   ├── architecture.md
+│   ├── pipeline.md
+│   └── tests.md
+├── mkdocs.yml                 # Configuration MkDocs
 ├── src/
 │   └── projet5/
-│       ├── db/              # Accès base de données
-│       ├── model/           # Logique métier et ML
-│       └── utils/           # Fonctions utilitaires
+│       ├── db/                # Accès base de données
+│       ├── model/             # Logique métier et ML
+│       └── utils/             # Fonctions utilitaires
 ├── models/
-│   └── model.joblib         # Modèle entraîné
+│   └── model.joblib           # Modèle entraîné
 ├── tests/
-│   ├── test_features.py     # Tests unitaires des features
-│   ├── test_validation.py   # Tests de validation Pydantic
-│   └── test_sanity.py       # Tests de cohérence globale
-├── notebooks/               # Exploration et entraînement
+│   ├── test_features.py
+│   ├── test_validation.py
+│   └── test_sanity.py
+├── notebooks/                 # Exploration et entraînement
 ├── requirements.txt
-├── .github/workflows/ci.yml # Pipeline CI
+├── .github/workflows/ci.yml   # Pipeline CI
 └── README.md
+```
 
 ---
 
