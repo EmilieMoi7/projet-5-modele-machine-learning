@@ -102,20 +102,26 @@ def predict(age, genre, revenu_mensuel, anciennete_entreprise, satisfaction_empl
     except ValidationError as e:
         raise gr.Error(f"Entrée invalide : {e.errors()}")
 
-    model_input_id = insert_model_input(
-        payload.age,
-        payload.genre,
-        payload.revenu_mensuel,
-        payload.anciennete_entreprise,
-        payload.satisfaction_employe,
+    try:
+        model_input_id = insert_model_input(
+            payload.age,
+            payload.genre,
+            payload.revenu_mensuel,
+            payload.anciennete_entreprise,
+            payload.satisfaction_employe,
     )
+    except Exception:
+        model_input_id = None
+
 
     X = build_model_input(**payload.model_dump())
 
     prediction = bool(model.predict(X)[0])
     proba = float(model.predict_proba(X)[0, 1])
 
-    insert_model_output(model_input_id, prediction, proba)
+    if model_input_id is not None:
+        insert_model_output(model_input_id, prediction, proba)
+
 
     return {
         "prediction": prediction,
