@@ -1,3 +1,14 @@
+---
+title: API de prédiction – Modèle de Machine Learning
+emoji: 🤖
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: "4.0.0"
+app_file: app.py
+pinned: false
+---
+
 # API de prédiction — Modèle de Machine Learning
 
 > Objectif : Ce projet est réalisé dans le cadre du Projet 5 de la formation AI Engineer. L’objectif est de mettre en place et déployer un modèle de machine learning. C'est également une première approche pour maitriser le système de gestion de versions avec Git et GitHub.
