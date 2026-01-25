@@ -97,8 +97,45 @@ L’application est structurée en 4 couches :
 - **Service Machine Learning** : construction des features et prédiction via le modèle scikit-learn  
 - **Base PostgreSQL** : persistance des entrées et sorties pour assurer la traçabilité des prédictions  
 
+```mermaid
+graph TD
+    %% Styles
+    classDef layer1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef layer2 fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
+    classDef layer3 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef layer4 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef note fill:#fff5ad,stroke:#d4a017,stroke-width:1px;
 
-![Schéma d’architecture](architecture.png)
+    subgraph Layer1 [1. Interface Web - Gradio]
+        UI[Saisie des données & Affichage]:::interface
+    end
+
+    subgraph Layer2 [2. API & Validation - Pydantic]
+        DTO[PredictRequest: Validation / Cast]:::api
+    end
+
+    subgraph Layer3 [3. Service Machine Learning]
+        FEAT[Feature Builder]:::ml
+        MODEL[Modèle scikit-learn]:::ml
+    end
+
+    subgraph Layer4 [4. Base PostgreSQL - Persistance]
+        DBL[DB Layer: db.py]:::db
+        PG[(Tables: model_inputs & model_outputs)]:::db
+    end
+
+    %% Flux
+    UI -->|1. Envoi inputs| DTO
+    DTO -->|2. Données validées| APP[app.py]
+    APP -->|3. Prétraitement| FEAT
+    FEAT -->|4. Prédiction| MODEL
+    APP -->|5. Traçabilité: Enregistrement Inputs/Outputs| DBL
+    DBL -->|Persistance| PG
+
+    %% Note pour justifier Hugging Face
+    Note(Note: En production sur Hugging Face, la couche 4 est isolée par try/except pour garantir la disponibilité du service en l'absence de DB locale.):::note
+    Note --- Layer4
+    ```
 
 ### Traçabilité et persistance des données
 
