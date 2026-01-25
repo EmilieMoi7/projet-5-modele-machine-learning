@@ -78,6 +78,7 @@ projet-5-modele-machine-learning/
 ├── tests/
 │   ├── test_features.py
 │   ├── test_validation.py
+├── ├── test_functional_predict.py
 │   └── test_sanity.py
 ├── notebooks/                 # Exploration et entraînement
 ├── requirements.txt
@@ -86,6 +87,27 @@ projet-5-modele-machine-learning/
 ```
 
 ---
+
+## Architecture globale 
+
+L’application est structurée en 4 couches :
+
+- **Interface Web (Gradio)** : saisie des données utilisateur et affichage des prédictions  
+- **API & Validation (Pydantic)** : validation, typage et sécurisation des inputs  
+- **Service Machine Learning** : construction des features et prédiction via le modèle scikit-learn  
+- **Base PostgreSQL** : persistance des entrées et sorties pour assurer la traçabilité des prédictions  
+
+
+![Schéma d’architecture](architecture.png)
+
+### Traçabilité et persistance des données
+
+À chaque appel de prédiction, les inputs et les outputs sont persistés en base de données afin d’assurer la traçabilité.
+
+**Base de données PostgreSQL :**
+- **Tables :** `model_inputs`, `model_outputs`
+- **Contenu :** paramètres d’entrée utilisateur, prédiction, probabilité associée
+
 
 ## Pipeline de traitement (logique)
 1. L’utilisateur saisit les données via l’interface Gradio.
@@ -168,9 +190,22 @@ Le rapport HTML permet d’identifier précisément les parties du code couverte
 ## Intégration continue (CI/CD)
 Un pipeline CI/CD est configuré via GitHub Actions afin d’installer les dépendances, exécuter les tests et garantir la stabilité du projet à chaque push et pull request.
 
+### Déploiement sur Hugging Face Spaces
+
+L’application est déployée sur Hugging Face Spaces :  
+👉 https://huggingface.co/spaces/Emilie7/projet-5-modele-ml
+
+Chaque push sur la branche `main` déclenche automatiquement :
+- l’installation des dépendances
+- l’exécution du pipeline CI
+- le déploiement en production
+
+Les variables sensibles sont stockées via Hugging Face Secrets.
+
 ---
 
 ## Sécurité et gestion des secrets
+**Variables d'environnement utilisées :** `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME`.
 - Les secrets (tokens, identifiants) sont stockés exclusivement via les variables d’environnement et les secrets GitHub Actions.
 - Aucun secret sensible n’est versionné dans le dépôt Git.
 - Les fichiers `.env` sont ignorés via `.gitignore`.
