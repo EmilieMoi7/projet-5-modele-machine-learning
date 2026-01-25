@@ -97,7 +97,7 @@ L’application est structurée en 4 couches :
 - **Service Machine Learning** : construction des features et prédiction via le modèle scikit-learn  
 - **Base PostgreSQL** : persistance des entrées et sorties pour assurer la traçabilité des prédictions  
 
-![Schema d'architecture](architecture.png)
+![Schema d'architecture](assets/architecture.png)
 
 
 ### Traçabilité et persistance des données
